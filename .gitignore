@@ -1,0 +1,28 @@
+# Virtual environments
+.venv/
+.conda/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Logs and local artifacts
+*.log
+scraper.log
+
+# Generated retrieval indexes and metadata
+*.faiss
+*_bm25.pkl
+*_meta.json
+
+# Local model artifacts
+models/*.gguf
+models/LegalSahyak_GGUF_Model/
+
+# OS/editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/

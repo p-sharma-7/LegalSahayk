@@ -1,0 +1,19 @@
+# Legacy compatibility file.
+# Use requirements.txt for primary setup.
+numpy
+pandas
+faiss-cpu
+sentence-transformers
+rank-bm25
+langchain
+langchain-community
+langchain-core
+llama-cpp-python
+requests
+beautifulsoup4
+pymupdf
+codecarbon
+torch
+transformers
+huggingface-hub
+tqdm

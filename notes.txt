@@ -1,0 +1,239 @@
+--- Benchmark Results ---
+Device: CPU
+Total Time: 13.20 seconds
+Generation Speed: 5.15 tokens/sec
+Carbon Emissions: 0.0001832 kg CO2eq
+-------------------------
+
+--- Benchmark Results ---
+Device: GPU
+Total Time: 14.18 seconds
+Generation Speed: 4.80 tokens/sec
+Carbon Emissions: 0.0002170 kg CO2eq
+-------------------------
+
+########################################
+ FINAL COMPARISON REPORT
+########################################
+Time Difference:    GPU was -0.98 seconds faster.
+Speed Difference:   GPU generated -0.36 more tokens per second.
+Carbon Difference:  GPU emitted 0.0000338 kg CO2eq more than CPU.
+
+
+##########################################################################################
+
+=========================================
+      LEGAL DATA ANALYSIS REPORT
+=========================================
+
+1. Total Unique Acts: 96
+
+2. Number of Unique Sections Per Act:
+-------------------------------------
+act
+Andhra Pradesh and Mysore (Transfer of Territory) Act, 1968                                                                                            20   
+Arbitration and Conciliation Act, 1996                                                                                                                 88   
+Asian Development Bank Act, 1966                                                                                                                        8   
+Banning of Unregulated Deposit Schemes Act, 2019                                                                                                       46   
+Bengal Embankment Act, 1855                                                                                                                            16   
+Bengal Indigo Contracts Act, 1836                                                                                                                       1   
+Bengal Land Revenue Sales Act, 1859                                                                                                                    61   
+Bihar and West Bengal (Transfer of Territories) Act, 1956                                                                                              53   
+Bilateral Netting of Qualified Financial Contracts Act, 2020                                                                                           18   
+Bombay Revenue Jurisdiction Act, 1876                                                                                                                  18   
+Calcutta Land-Revenue Act, 1856                                                                                                                         4   
+Central Excise Act, 1944                                                                                                                               42   
+Central Provinces Financial Commissioner's Act, 1908                                                                                                    7   
+Central Sales Tax Act, 1956                                                                                                                            28   
+Central Silk Board Act, 1948                                                                                                                           18   
+Chit Funds Act, 1982                                                                                                                                   91   
+Coal Mines Provident Fund and Miscellaneous Provisions Act, 1948                                                                                       16   
+Coconut Development Board Act, 1979                                                                                                                    22   
+Companies (Profits) Surtax Act, 1964                                                                                                                   27   
+Conservation of Foreign Exchange and Prevention of Smuggling Activities Act, 1974                                                                      15   
+Credit Information Companies (Regulation) Act, 2005.                                                                                                   38   
+Customs Tariff Act, 1975                                                                                                                               77   
+Deposit Insurance and Credit Guarantee Corporation Act, 1961                                                                                           52   
+Depositories Act, 1996                                                                                                                                 32   
+Designs Act, 2000                                                                                                                                      49   
+Diplomatic and Consular Officers (Oaths and Fees) Act, 1948                                                                                             9   
+Dock Workers (Regulation of Employment) Act, 1948                                                                                                      10   
+Essential Commodities Act, 1955                                                                                                                        17   
+Extending certain Acts to Straits Settlement , 1852                                                                                                     2   
+Fiscal Responsibility and Budget Management Act, 2003                                                                                                  14   
+Footwear Design and Development Institute Act, 2017                                                                                                    40   
+Foreign Aircraft (Exemption from Taxes and Duties on Fuel and Lubricants) Act, 2002                                                                     4   
+Gift-tax Act, 1958                                                                                                                                     49   
+Goa, Daman and Diu (Administration) Act, 1962                                                                                                          12   
+Goa, Daman and Diu (Extension of the Code of Civil Procedure and the Arbitration Act) Act, 1965                                                         8   
+Government Securities Act, 2006                                                                                                                        36   
+Hindu Disposition of Property Act, 1916                                                                                                                 9   
+Income-tax Act, 1961                                                                                                                                  301   
+Indian Council of World Affairs Act, 2001                                                                                                              30   
+Indian Tolls (Army and Air Force) Act, 1901                                                                                                            12   
+Indian Trust Act, 1882                                                                                                                                 97   
+Industrial Disputes (Banking and Insurance Companies) Act, 1949                                                                                         8   
+Industrial Finance Corporation (Transfer of Undertaking and Repeal) Act, 1993                                                                          13   
+Information Technology Act, 2000                                                                                                                       95   
+Insurance Regulatory and Development Authority Act, 1999                                                                                               51   
+Integrated Goods and Services Tax (Extension to Jammu and Kashmir) Act, 2017                                                                            4   
+Inter-State River Water Disputes Act, 1956                                                                                                             16   
+Interest-tax Act, 1974                                                                                                                                 32   
+Khadi and Village Industries Commission Act, 1956                                                                                                      29   
+Lalit Kala Akadami (Taking Over of Management) Act, 1997                                                                                               17   
+Life Insurance Corporation Act, 1956                                                                                                                   53   
+Limited Liability Partnership Act, 2008                                                                                                                82   
+Madras Board of Revenue,1849                                                                                                                            2   
+Madras City Land Revenue Act, 1851                                                                                                                     16   
+Madras Rent and Revenue Sales Act, 1839                                                                                                                 8   
+Manipur (Sales of Motor Spirit and Lubricants) Taxation Act, 1962                                                                                      38   
+National Bank for Agriculture and Rural Development Act, 1981                                                                                          63   
+National Capital Territory of Delhi (Recognition of Property Rights of Residents in Unauthorised Colonies) Act, 2019                                    4   
+National Dairy Development Board Act, 1987                                                                                                             51   
+National Housing Bank Act, 1987                                                                                                                        58   
+National Trust for Welfare of Persons with Autism, Cerebral Palsy, Mental Retardation and Multiple Disabilities Act, 1999                              37   
+Official Trusteers Act, 1913                                                                                                                           34   
+Oil and Natural Gas Commission (Transfer of Undertaking and Repeal) Act, 1993                                                                          13   
+Partition of Revenue-Paying Estates Act, 1863                                                                                                          60   
+Pension Fund Regulatory and Development Authority Act, 2013                                                                                            57   
+Petroleum and Natural Gas Regulatory Board Act, 2006                                                                                                   64   
+Pondicherry (Administration)  Act, 1962                                                                                                                21   
+Prize Competitions Act, 1955                                                                                                                           20   
+Prohibition of Electronic Cigarettes (Production, Manufacture, Import, Export, Transport, Sale, Distribution, Storage and Advertisement) Act, 2019     19   
+Provident Funds Act, 1925                                                                                                                             155   
+Public Employment (Requirement as to Residence) Act, 1957                                                                                               6   
+Punjab Land-Revenue Act, 1887                                                                                                                         159   
+Punjab Tenancy Act, 1887.                                                                                                                             113   
+Railways (Employment of Members of the Armed Forces) Act, 1965                                                                                          6   
+Rajasthan and Madhya Pradesh (Transfer of Territories) Act, 1959                                                                                       18   
+Recovery Of Debts And Bankruptcy Act, 1993                                                                                                             38   
+Rehabilitation Finance Administration Act, 1948                                                                                                        25   
+Rent Recovery Act, 1853                                                                                                                                 5   
+Reserve Bank (Transfer to Public Ownership) Act, 1948                                                                                                   8   
+Revenue Commissioners, Bombay Act, 1842                                                                                                                 1   
+Revenue, Bombay, 1842                                                                                                                                   1   
+River Boards Act, 1956                                                                                                                                 30   
+Sale of Goods Act, 1930                                                                                                                                68   
+Scheduled Securities (Hyderabad) Act,1949                                                                                                               8   
+Scheduled Tribes and Other Traditional Forest Dwellers (Recognition of Forest Rights) Act, 2006                                                        15   
+Seamens Provident Fund Act, 1966                                                                                                                       25   
+Semiconductor Integrated Circuits Layout-Design Act, 2000                                                                                              97   
+Specified Bank Notes (Cessation of Liabilities) Act, 2017                                                                                              14   
+State-Associated Banks (Miscellaneous Provisions) Act, 1962                                                                                             7   
+Taxation Laws (Continuation and Validation of Recovery Proceedings) Act, 1964                                                                           8   
+Technology Development Board Act, 1995                                                                                                                 24   
+Transfer of Property Act, 1882                                                                                                                        140   
+Union Duties of Excise (Distribution) Act, 1979                                                                                                         6   
+Union Territories (Stamp and Court-fees Laws) Act, 1961                                                                                                 7   
+WASTE-LANDS (CLAIMS) ACT, 1863                                                                                                                         25   
+Wealth-tax Act, 1957                                                                                                                                   83   
+-------------------------------------
+
+3. Overall Average Word Count per entry: 96.49 words
+
+4. Average Word Count Per Act:
+-------------------------------------
+act
+Andhra Pradesh and Mysore (Transfer of Territory) Act, 1968                                                                                             55.88
+Arbitration and Conciliation Act, 1996                                                                                                                  82.17
+Asian Development Bank Act, 1966                                                                                                                        83.05
+Banning of Unregulated Deposit Schemes Act, 2019                                                                                                        93.71
+Bengal Embankment Act, 1855                                                                                                                            303.29
+Bengal Indigo Contracts Act, 1836                                                                                                                      549.00
+Bengal Land Revenue Sales Act, 1859                                                                                                                    143.83
+Bihar and West Bengal (Transfer of Territories) Act, 1956                                                                                               62.80
+Bilateral Netting of Qualified Financial Contracts Act, 2020                                                                                            69.11
+Bombay Revenue Jurisdiction Act, 1876                                                                                                                   48.50
+Calcutta Land-Revenue Act, 1856                                                                                                                         96.00
+Central Excise Act, 1944                                                                                                                                92.03
+Central Provinces Financial Commissioner's Act, 1908                                                                                                    49.25
+Central Sales Tax Act, 1956                                                                                                                             88.14
+Central Silk Board Act, 1948                                                                                                                            83.58
+Chit Funds Act, 1982                                                                                                                                    66.18
+Coal Mines Provident Fund and Miscellaneous Provisions Act, 1948                                                                                        67.60
+Coconut Development Board Act, 1979                                                                                                                     87.67
+Companies (Profits) Surtax Act, 1964                                                                                                                   109.21
+Conservation of Foreign Exchange and Prevention of Smuggling Activities Act, 1974                                                                      105.47
+Credit Information Companies (Regulation) Act, 2005.                                                                                                   132.14
+Customs Tariff Act, 1975                                                                                                                               346.13
+Deposit Insurance and Credit Guarantee Corporation Act, 1961                                                                                            73.83
+Depositories Act, 1996                                                                                                                                  89.19
+Designs Act, 2000                                                                                                                                       92.42
+Diplomatic and Consular Officers (Oaths and Fees) Act, 1948                                                                                             44.60
+Dock Workers (Regulation of Employment) Act, 1948                                                                                                       85.82
+Essential Commodities Act, 1955                                                                                                                        116.72
+Extending certain Acts to Straits Settlement , 1852                                                                                                     97.00
+Fiscal Responsibility and Budget Management Act, 2003                                                                                                   58.10
+Footwear Design and Development Institute Act, 2017                                                                                                     68.16
+Foreign Aircraft (Exemption from Taxes and Duties on Fuel and Lubricants) Act, 2002                                                                     52.57
+Gift-tax Act, 1958                                                                                                                                      73.09
+Goa, Daman and Diu (Administration) Act, 1962                                                                                                           52.82
+Goa, Daman and Diu (Extension of the Code of Civil Procedure and the Arbitration Act) Act, 1965                                                         61.12
+Government Securities Act, 2006                                                                                                                         99.39
+Hindu Disposition of Property Act, 1916                                                                                                                 28.63
+Income-tax Act, 1961                                                                                                                                    90.27
+Indian Council of World Affairs Act, 2001                                                                                                               67.13
+Indian Tolls (Army and Air Force) Act, 1901                                                                                                             45.08
+Indian Trust Act, 1882                                                                                                                                  62.78
+Industrial Disputes (Banking and Insurance Companies) Act, 1949                                                                                         49.05
+Industrial Finance Corporation (Transfer of Undertaking and Repeal) Act, 1993                                                                           70.35
+Information Technology Act, 2000                                                                                                                        67.50
+Insurance Regulatory and Development Authority Act, 1999                                                                                               110.95
+Integrated Goods and Services Tax (Extension to Jammu and Kashmir) Act, 2017                                                                            51.50
+Inter-State River Water Disputes Act, 1956                                                                                                              63.27
+Interest-tax Act, 1974                                                                                                                                  84.67
+Khadi and Village Industries Commission Act, 1956                                                                                                       50.50
+Lalit Kala Akadami (Taking Over of Management) Act, 1997                                                                                                93.03
+Life Insurance Corporation Act, 1956                                                                                                                   191.45
+Limited Liability Partnership Act, 2008                                                                                                                 86.94
+Madras Board of Revenue,1849                                                                                                                           221.00
+Madras City Land Revenue Act, 1851                                                                                                                     110.56
+Madras Rent and Revenue Sales Act, 1839                                                                                                                 28.41
+Manipur (Sales of Motor Spirit and Lubricants) Taxation Act, 1962                                                                                       65.09
+National Bank for Agriculture and Rural Development Act, 1981                                                                                           89.92
+National Capital Territory of Delhi (Recognition of Property Rights of Residents in Unauthorised Colonies) Act, 2019                                   164.43
+National Dairy Development Board Act, 1987                                                                                                              87.22
+National Housing Bank Act, 1987                                                                                                                         94.63
+National Trust for Welfare of Persons with Autism, Cerebral Palsy, Mental Retardation and Multiple Disabilities Act, 1999                               73.53
+Official Trusteers Act, 1913                                                                                                                            48.57
+Oil and Natural Gas Commission (Transfer of Undertaking and Repeal) Act, 1993                                                                           79.85
+Partition of Revenue-Paying Estates Act, 1863                                                                                                          113.16
+Pension Fund Regulatory and Development Authority Act, 2013                                                                                            116.96
+Petroleum and Natural Gas Regulatory Board Act, 2006                                                                                                   103.27
+Pondicherry (Administration)  Act, 1962                                                                                                                 48.94
+Prize Competitions Act, 1955                                                                                                                            58.84
+Prohibition of Electronic Cigarettes (Production, Manufacture, Import, Export, Transport, Sale, Distribution, Storage and Advertisement) Act, 2019      56.46
+Provident Funds Act, 1925                                                                                                                               26.07
+Public Employment (Requirement as to Residence) Act, 1957                                                                                               46.07
+Punjab Land-Revenue Act, 1887                                                                                                                           69.13
+Punjab Tenancy Act, 1887.                                                                                                                               96.23
+Railways (Employment of Members of the Armed Forces) Act, 1965                                                                                          57.60
+Rajasthan and Madhya Pradesh (Transfer of Territories) Act, 1959                                                                                        56.24
+Recovery Of Debts And Bankruptcy Act, 1993                                                                                                              79.95
+Rehabilitation Finance Administration Act, 1948                                                                                                         55.29
+Rent Recovery Act, 1853                                                                                                                                270.40
+Reserve Bank (Transfer to Public Ownership) Act, 1948                                                                                                   67.50
+Revenue Commissioners, Bombay Act, 1842                                                                                                                211.00
+Revenue, Bombay, 1842                                                                                                                                 1179.00
+River Boards Act, 1956                                                                                                                                  58.32
+Sale of Goods Act, 1930                                                                                                                                 61.45
+Scheduled Securities (Hyderabad) Act,1949                                                                                                               52.29
+Scheduled Tribes and Other Traditional Forest Dwellers (Recognition of Forest Rights) Act, 2006                                                        134.32
+Seamens Provident Fund Act, 1966                                                                                                                        63.51
+Semiconductor Integrated Circuits Layout-Design Act, 2000                                                                                               75.90
+Specified Bank Notes (Cessation of Liabilities) Act, 2017                                                                                               60.25
+State-Associated Banks (Miscellaneous Provisions) Act, 1962                                                                                             54.79
+Taxation Laws (Continuation and Validation of Recovery Proceedings) Act, 1964                                                                           86.00
+Technology Development Board Act, 1995                                                                                                                  65.73
+Transfer of Property Act, 1882                                                                                                                          64.30
+Union Duties of Excise (Distribution) Act, 1979                                                                                                         80.43
+Union Territories (Stamp and Court-fees Laws) Act, 1961                                                                                                 53.85
+WASTE-LANDS (CLAIMS) ACT, 1863                                                                                                                         133.41
+Wealth-tax Act, 1957                                                                                                                                    78.79
+-------------------------------------
+
+--- Additional Insights ---
+* Total Data Entries (Rows) Scraped: 15601
+* Average Keywords per Section: 1.21
+* Most Common Keyword: 'tax' (Appears 7305 times)
+* Total Unique PDF Documents Linked: 96

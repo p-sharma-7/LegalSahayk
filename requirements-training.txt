@@ -1,0 +1,9 @@
+# Optional training dependencies used by models/train.py
+# Install after base requirements:
+#   pip install -r requirements-training.txt
+
+datasets
+trl
+unsloth
+accelerate
+bitsandbytes

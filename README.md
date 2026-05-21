@@ -1,56 +1,62 @@
 # LegalSahyak
 
-LegalSahyak is a local legal question-answering pipeline that combines:
+LegalSahyak is a local legal question-answering system focused on Indian statutes and contract clauses. It combines hybrid retrieval (FAISS + BM25), cross-encoder reranking, and a local GGUF model for final answer generation.
 
-- Hybrid retrieval (`FAISS` + `BM25`) over statutes and contract clauses
-- Cross-encoder reranking for better relevance
-- A local `GGUF` LLM (via `llama-cpp`/LangChain) for final answer generation
+This repository includes:
+- Data scraping and preprocessing for Indian statutes
+- Retrieval index generation
+- A FastAPI backend for chat inference
+- A React + TypeScript frontend UI
+- Training and benchmarking utilities
 
-The project also includes scripts to scrape and process Indian statute data from India Code, plus model training and benchmarking utilities.
+This project is intended for research and internal tooling. It does not provide legal advice.
 
-## Repository Layout
+## How it works
+
+1. **Ingestion** (`ingestion.py`)
+   - Builds dense embeddings using `BAAI/bge-small-en-v1.5`
+   - Builds sparse BM25 index
+   - Saves FAISS index, BM25 index, and metadata JSON
+2. **Query**
+   - Hybrid retrieval from statutes and contract clauses
+   - Reranks with `BAAI/bge-reranker-large`
+3. **Generation**
+   - Uses a local GGUF model via `llama_cpp` to produce final answers
+
+## Repository layout
 
 ```text
 .
-|-- ingestion.py                  # Build retrieval databases (FAISS + BM25 + metadata)
-|-- run_agent.py                  # Run LangChain ReAct agent with local GGUF model
-|-- db_statutes.*                 # Built statutes vector/sparse indices + metadata
-|-- db_contract.*                 # Built contract vector/sparse indices + metadata
-|-- data_scrapping/
-|   |-- act_link_finder.py        # Collect act links from India Code search pages
-|   |-- data_download.py          # Download + parse PDF content into section chunks
-|   |-- analyze_statutes.py       # Dataset analytics
-|   |-- sme_statutes_db.json      # Scraped statute dataset (input for ingestion)
-|-- models/
-|   |-- train.py                  # Fine-tuning/export pipeline
-|   |-- analyze_model.py          # CPU vs GPU benchmark + codecarbon metrics
-|   |-- LegalSahyak_q4_k_m.gguf   # Local inference model used by run_agent.py
+|-- backend.py                 FastAPI backend (API endpoints)
+|-- ingestion.py               Build retrieval databases (FAISS + BM25 + metadata)
+|-- run_agent.py               Local CLI agent runner
+|-- db_statutes.*              Generated statutes indices (created by ingestion)
+|-- db_contract.*              Generated contract indices (created by ingestion)
+|-- data_scrapping/            India Code scraping and PDF parsing
+|-- models/                    Training scripts and local GGUF model
+|-- frontend/                  React + TypeScript UI (Vite)
+|-- scripts/smoke_test.py      Environment and artifact checks
+|-- test_integration.py        API integration test (requires backend running)
+|-- requirements.txt           Core dependencies
+|-- requirements-training.txt  Optional training dependencies
+|-- setup.ps1                  Windows setup helper
 ```
 
-## How It Works
+## Requirements
 
-1. `ingestion.py` reads statutes JSON and contract text.
-2. It creates:
-	- Dense index with sentence embeddings (`BAAI/bge-small-en-v1.5`) and `FAISS`
-	- Sparse index with `BM25`
-	- Metadata JSON files
-3. `run_agent.py` loads indices + reranker (`BAAI/bge-reranker-large`).
-4. A ReAct agent chooses between:
-	- `search_contract`
-	- `search_statutes`
-5. The final answer is generated using local `LlamaCpp` with the GGUF model.
+- Python 3.10+ (recommended 3.10 or 3.11)
+- Node.js 18+ (for frontend)
+- CMake and a C++ compiler for `llama_cpp` builds
+- Disk space:
+  - Model file: ~4.7 GB
+  - Indices: ~35 MB for sample data
 
-## Prerequisites
-
-- Python 3.10+ (recommended)
-- Optional CUDA GPU (current scripts default to `device="cuda"` for embedding/reranking)
-- GGUF model file available at `models/LegalSahyak_q4_k_m.gguf`
+Optional:
+- CUDA GPU for faster embedding and LLM inference
 
 ## Installation
 
-Use the bootstrap script for the most reproducible setup.
-
-### Recommended (Windows PowerShell)
+### Windows PowerShell (recommended)
 
 ```powershell
 .\setup.ps1
@@ -62,45 +68,103 @@ Optional training stack:
 .\setup.ps1 -WithTraining
 ```
 
-### Manual Setup
+### Linux/macOS (manual)
 
-Create and activate a virtual environment, then install dependencies.
-
-### Windows (PowerShell)
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
 Optional training dependencies:
 
-```powershell
+```bash
 pip install -r requirements-training.txt
 ```
 
-Legacy note: `requirements.text` is retained for compatibility, but `requirements.txt` is the canonical dependency file.
+## Model setup (GGUF)
 
-## Quick Start
+The backend will load a local GGUF model if present. If not found, it will attempt to download from Hugging Face.
 
-### 1) Build Retrieval Databases
+### Option A: Use a local GGUF file (recommended)
+
+1. Place the model at:
+
+```
+models/LegalSahyak_q4_k_m.gguf
+```
+
+2. Optionally set the model path in `.env`:
+
+```
+MODEL_PATH=models/LegalSahyak_q4_k_m.gguf
+```
+
+### Option B: Download from Hugging Face
+
+The backend uses:
+- Repo: `pushkarsharma/LegalSahayk_q4_k_m`
+- File: `LegalSahyak_q4_k_m.gguf`
+
+If you want to download manually:
+
+```bash
+python - <<'PY'
+from huggingface_hub import hf_hub_download
+hf_hub_download(
+    repo_id="pushkarsharma/LegalSahayk_q4_k_m",
+    filename="LegalSahyak_q4_k_m.gguf",
+    local_dir="models",
+    local_dir_use_symlinks=False
+)
+PY
+```
+
+If the repo is gated or rate-limited, set a token:
+
+```bash
+export HUGGINGFACE_HUB_TOKEN=your_token_here
+```
+
+Windows (PowerShell):
 
 ```powershell
+$env:HUGGINGFACE_HUB_TOKEN = "your_token_here"
+```
+
+The Hugging Face cache can be redirected:
+
+```bash
+export HF_HOME=/path/to/cache
+```
+
+## Environment variables
+
+Create a `.env` file at the repo root (do not commit it):
+
+```
+DEVICE=cpu
+N_GPU_LAYERS=0
+MODEL_PATH=models/LegalSahyak_q4_k_m.gguf
+DB_DIR=LegalSahyak
+```
+
+Details:
+- `DEVICE`: `cpu` or `cuda` for embedding and reranking in the backend
+- `N_GPU_LAYERS`: number of layers to offload to GPU for `llama_cpp`
+- `MODEL_PATH`: local GGUF file path
+- `DB_DIR`: directory for index files
+
+Note: `ingestion.py` currently uses `device="cuda"` for embeddings. If you do not have a GPU, change this to `"cpu"` before running ingestion.
+
+## Build retrieval databases
+
+```bash
 python ingestion.py
 ```
 
-If you rebuilt statutes from scraping, ensure `data_scrapping/sme_statutes_db.json` exists before ingestion.
-
-Optional environment check before running the agent:
-
-```powershell
-python scripts/smoke_test.py
-```
-
-This creates or updates:
-
+This generates:
 - `db_statutes.faiss`
 - `db_statutes_bm25.pkl`
 - `db_statutes_meta.json`
@@ -108,68 +172,125 @@ This creates or updates:
 - `db_contract_bm25.pkl`
 - `db_contract_meta.json`
 
-### 2) Run the Agent
-
-```powershell
-python run_agent.py
+Statutes data input:
+```
+data_scrapping/sme_statutes_db.json
 ```
 
-By default, the script executes a built-in legal query in `run_agent.py` and prints the final output.
+Contract data input:
+- A sample contract is embedded in `ingestion.py`
+- Replace the `sample_contract` variable with your own clauses
 
-## Data Scraping Workflow (Optional)
+## Run the backend (API)
 
-Use this if you want to rebuild `sme_statutes_db.json` from fresh sources.
+```bash
+uvicorn backend:app --reload --host 0.0.0.0 --port 8000
+```
 
-1. Collect act links:
+API endpoints:
+- `GET /api/status`
+- `POST /api/chat`
 
-```powershell
+Example request:
+
+```bash
+curl -X POST http://localhost:8000/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "What is the penalty for GST evasion?",
+    "history": []
+  }'
+```
+
+Swagger docs:
+```
+http://localhost:8000/docs
+```
+
+## Run the frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open:
+```
+http://localhost:5173
+```
+
+The frontend uses:
+```
+VITE_API_URL=http://localhost:8000
+```
+
+## Smoke test
+
+```bash
+python scripts/smoke_test.py
+```
+
+## Integration test (backend must be running)
+
+```bash
+python test_integration.py
+```
+
+## Data scraping workflow (optional)
+
+Use this only if you want to rebuild `sme_statutes_db.json` from source.
+
+```bash
 cd data_scrapping
 python act_link_finder.py
-```
-
-2. Download/parse PDFs into section-level JSON:
-
-```powershell
 python data_download.py
-```
-
-3. (Optional) Analyze scraped dataset:
-
-```powershell
 python analyze_statutes.py
+cd ..
 ```
 
-4. Return to repo root and run ingestion:
+Then rebuild indices:
 
-```powershell
-cd ..
+```bash
 python ingestion.py
 ```
 
-## Training and Benchmarking
+## Training and benchmarking (optional)
 
-- Fine-tuning/export script: `models/train.py`
-- Inference benchmark (CPU vs GPU + emissions): `models/analyze_model.py`
+- `models/train.py` for fine-tuning and export
+- `models/analyze_model.py` for CPU vs GPU benchmark and emissions
 
-Run from `models/` directory if relative model paths are used.
+Run from the `models/` directory if relative paths are used.
 
 ## Troubleshooting
 
-- `FileNotFoundError` for database artifacts: Run `python ingestion.py` first.
-- CUDA/device errors on systems without GPU: Update `device="cuda"` to `device="cpu"` in `ingestion.py` and `run_agent.py`.
-- GGUF model not found: Ensure `models/LegalSahyak_q4_k_m.gguf` exists or update `model_path` in `run_agent.py`.
-- `faiss` install issues on Windows: Start with `faiss-cpu`; GPU builds often need extra system setup.
-- PowerShell script execution is blocked: run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` and retry `./setup.ps1`.
+**Missing database files**
+- Run `python ingestion.py`
 
-## Reproducibility Checklist
+**CUDA or device errors**
+- Change `DEVICE=cpu` in `.env`
+- For ingestion, change `device="cuda"` to `"cpu"`
 
-- Use Python 3.10+ and a fresh `.venv`
-- Install from `requirements.txt` (not ad-hoc package lists)
-- Keep model path valid: `models/LegalSahyak_q4_k_m.gguf`
-- Rebuild indices with `python ingestion.py` after changing statute/contract data
-- Commit code and config changes separately from generated `.faiss`/`.pkl` files
+**Model not found**
+- Ensure `models/LegalSahyak_q4_k_m.gguf` exists
+- Or set `MODEL_PATH` in `.env`
 
-## Notes
+**Slow responses**
+- CPU inference is slow for GGUF models
+- Use GPU and increase `N_GPU_LAYERS` if available
 
-- `run_agent.py` currently uses a hardcoded example query. You can replace the `query` variable under `if __name__ == "__main__":` for custom questions.
-- Keep file paths relative to repository root when running scripts.
+**faiss installation problems on Windows**
+- Use `faiss-cpu` first
+- GPU builds require additional system setup
+
+## Reproducibility checklist
+
+- Use a fresh virtual environment
+- Install from `requirements.txt`
+- Keep model path valid
+- Rebuild indices after changing statute or contract data
+- Do not commit generated `.faiss`, `.pkl`, or `.json` files
+
+## License
+
+Add a license file if you plan to distribute this repository.

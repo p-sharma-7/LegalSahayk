@@ -8,7 +8,7 @@ from sentence_transformers import SentenceTransformer, CrossEncoder
 # --- LANGCHAIN IMPORTS ---
 from langchain_community.llms import LlamaCpp
 from langchain_core.tools import tool
-from langchain.agents import AgentExecutor, create_react_agent
+from langchain_classic.agents import AgentExecutor, create_react_agent
 from langchain_core.prompts import PromptTemplate
 
 # ==========================================
@@ -97,7 +97,7 @@ tools = [search_contract, search_statutes]
 # ==========================================
 print("\nLoading Local GGUF Model via LlamaCpp...")
 llm = LlamaCpp(
-    model_path="models\LegalSahyak_q4_k_m.gguf", 
+    model_path="models/LegalSahyak_q4_k_m.gguf", 
     n_gpu_layers=20,  
     n_ctx=4096,       
     temperature=0.0,  

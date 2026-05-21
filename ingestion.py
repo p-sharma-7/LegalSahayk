@@ -4,8 +4,18 @@ import numpy as np
 import os
 import re
 import pickle
-from sentence_transformers import SentenceTransformer
-from rank_bm25 import BM25Okapi
+
+try:
+    from sentence_transformers import SentenceTransformer
+except ImportError:
+    print("Error: sentence_transformers not found. Install with: pip install sentence-transformers")
+    raise
+
+try:
+    from rank_bm25 import BM25Okapi
+except ImportError:
+    print("Error: rank_bm25 not found. Install with: pip install rank-bm25")
+    raise
 
 # ==========================================
 # 1. INITIALIZE EMBEDDING MODEL
@@ -102,7 +112,7 @@ def ingest_contract(contract_text, output_prefix="db_contract"):
 # ==========================================
 if __name__ == "__main__":
     # 1. Ingest Statutes
-    json_file = "data_scrapping\sme_statutes_db.json"
+    json_file = os.path.join("data_scrapping", "sme_statutes_db.json")
     if os.path.exists(json_file):
         ingest_statutes(json_file, output_prefix="db_statutes")
     else:

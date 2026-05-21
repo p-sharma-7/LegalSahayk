@@ -5,7 +5,6 @@ faiss-cpu
 sentence-transformers
 rank-bm25
 langchain
-langchain-classic
 langchain-community
 langchain-core
 llama-cpp-python
@@ -17,7 +16,7 @@ codecarbon
 # Optional but commonly needed with sentence-transformers
 torch
 transformers
-huggingface-hub<0.26.0
+huggingface-hub>=0.26.0
 
 # Utility
 tqdm

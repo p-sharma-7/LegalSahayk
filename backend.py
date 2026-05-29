@@ -1,21 +1,14 @@
 import os
+import re
 import json
 import pickle
-import time
 from typing import List, Tuple
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from pathlib import Path
 
-# Load local environment file if it exists
-if os.path.exists(".env"):
-    with open(".env") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                key, val = line.split("=", 1)
-                os.environ[key.strip()] = val.strip()
+load_dotenv()
 
 
 # ── LLM ──────────────────────────────────────────────────────────────────────
@@ -43,6 +36,7 @@ LOCAL_MODEL_PATH = os.getenv("MODEL_PATH", "models/LegalSahyak_q4_k_m.gguf")
 HF_MODEL_REPO    = "pushkarsharma/LegalSahayk_q4_k_m"
 HF_MODEL_FILE    = "LegalSahyak_q4_k_m.gguf"
 MIN_MODEL_SIZE   = 200 * 1024 * 1024  # 200 MB minimum — guards against truncated downloads
+MAX_QUERY_LEN    = 2000
 
 app = FastAPI(title="LegalSahyak API", description="AI-powered Indian Legal Assistant Backend")
 
@@ -50,7 +44,6 @@ app = FastAPI(title="LegalSahyak API", description="AI-powered Indian Legal Assi
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # In production, specify the Vite host (e.g. http://localhost:5173)
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -84,7 +77,6 @@ try:
     contract_index, contract_bm25, contract_meta = load_index("db_contract")
     print(f"✅ Databases loaded from '{DB_DIR}/' directory.")
     db_loaded = True
-    print("✅ Databases loaded successfully.")
 except Exception as e:
     print(f"⚠️ Error loading database indices: {e}")
     db_loaded = False
@@ -133,7 +125,7 @@ def hybrid_search(query: str, faiss_index, bm25, meta, top_k=TOP_K_RETRIEVE):
     dense_ids = dense_ids[0].tolist()
 
     # Sparse Search (BM25)
-    tokens = query.lower().split()
+    tokens = re.sub(r'[^\w\s]', '', query.lower()).split()
     bm25_scores = bm25.get_scores(tokens)
     sparse_ids = np.argsort(bm25_scores)[::-1][:top_k].tolist()
 
@@ -182,10 +174,6 @@ def build_context(statute_docs, contract_docs):
 # ─────────────────────────────────────────────────────────────────────────────
 # API Models & Routes
 # ─────────────────────────────────────────────────────────────────────────────
-class ChatMessage(BaseModel):
-    role: str
-    content: str
-
 class ChatRequest(BaseModel):
     query: str
     history: List[Tuple[str, str]] = []
@@ -220,16 +208,19 @@ def chat(payload: ChatRequest):
     query = payload.query.strip()
     if not query:
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
+    if len(query) > MAX_QUERY_LEN:
+        raise HTTPException(status_code=400, detail=f"Query too long. Maximum {MAX_QUERY_LEN} characters.")
 
     # Retrieve from both databases
     stat_docs = rerank(query, hybrid_search(query, statute_index, statute_bm25, statute_meta))
     cont_docs = rerank(query, hybrid_search(query, contract_index, contract_bm25, contract_meta))
     context = build_context(stat_docs, cont_docs)
 
-    messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"},
-    ]
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    for user_turn, bot_turn in payload.history[-6:]:
+        messages.append({"role": "user", "content": user_turn})
+        messages.append({"role": "assistant", "content": bot_turn})
+    messages.append({"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"})
 
     try:
         resp = llm.create_chat_completion(
@@ -244,18 +235,20 @@ def chat(payload: ChatRequest):
     # Format sources
     sources = []
     for d in stat_docs:
+        _t = d.get("text", "")
         sources.append(SourceInfo(
             type="statute",
             title=d.get("act_title", d.get("title", "Statute")),
             section=d.get("section_title", d.get("section", "")),
-            snippet=d.get("text", "")[:300] + "..."
+            snippet=_t[:300] + ("..." if len(_t) > 300 else "")
         ))
     for d in cont_docs:
+        _t = d.get("text", "")
         sources.append(SourceInfo(
             type="contract",
             title=d.get("title", "Contract Clause"),
             section="",
-            snippet=d.get("text", "")[:300] + "..."
+            snippet=_t[:300] + ("..." if len(_t) > 300 else "")
         ))
 
     return ChatResponse(answer=answer, sources=sources)

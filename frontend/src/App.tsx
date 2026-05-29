@@ -90,7 +90,7 @@ function FormattedMessage({ text }: { text: string }) {
 
   const lines = text.split('\n');
   const elements: React.ReactNode[] = [];
-  let currentBlock: { type: 'code' | 'list' | 'table'; lines: string[]; lang?: string } | null = null;
+  let currentBlock: { type: 'code' | 'ul' | 'ol' | 'table'; lines: string[]; lang?: string } | null = null;
 
   const flushBlock = (key: number) => {
     if (!currentBlock) return;
@@ -100,13 +100,21 @@ function FormattedMessage({ text }: { text: string }) {
           <code>{currentBlock.lines.join('\n')}</code>
         </pre>
       );
-    } else if (currentBlock.type === 'list') {
+    } else if (currentBlock.type === 'ul') {
       elements.push(
-        <ul key={`list-${key}`}>
+        <ul key={`ul-${key}`}>
           {currentBlock.lines.map((li, i) => (
             <li key={i}>{parseInline(li)}</li>
           ))}
         </ul>
+      );
+    } else if (currentBlock.type === 'ol') {
+      elements.push(
+        <ol key={`ol-${key}`}>
+          {currentBlock.lines.map((li, i) => (
+            <li key={i}>{parseInline(li)}</li>
+          ))}
+        </ol>
       );
     } else if (currentBlock.type === 'table') {
       const rows = currentBlock.lines.map(line => 
@@ -164,12 +172,39 @@ function FormattedMessage({ text }: { text: string }) {
       return;
     }
 
+    if (trimmed.startsWith('### ')) {
+      flushBlock(idx);
+      elements.push(<h3 key={idx}>{parseInline(trimmed.slice(4))}</h3>);
+      return;
+    }
+    if (trimmed.startsWith('## ')) {
+      flushBlock(idx);
+      elements.push(<h2 key={idx}>{parseInline(trimmed.slice(3))}</h2>);
+      return;
+    }
+    if (trimmed.startsWith('# ')) {
+      flushBlock(idx);
+      elements.push(<h1 key={idx}>{parseInline(trimmed.slice(2))}</h1>);
+      return;
+    }
+
     if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-      if (currentBlock && currentBlock.type === 'list') {
+      if (currentBlock?.type === 'ul') {
         currentBlock.lines.push(trimmed.slice(2));
       } else {
         flushBlock(idx);
-        currentBlock = { type: 'list', lines: [trimmed.slice(2)] };
+        currentBlock = { type: 'ul', lines: [trimmed.slice(2)] };
+      }
+      return;
+    }
+
+    if (/^\d+\. /.test(trimmed)) {
+      const item = trimmed.replace(/^\d+\. /, '');
+      if (currentBlock?.type === 'ol') {
+        currentBlock.lines.push(item);
+      } else {
+        flushBlock(idx);
+        currentBlock = { type: 'ol', lines: [item] };
       }
       return;
     }
@@ -205,6 +240,8 @@ function App() {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Toast auto-dismiss
   useEffect(() => {
@@ -237,9 +274,16 @@ function App() {
 
   useEffect(() => {
     checkStatus();
-    const interval = setInterval(checkStatus, 5000);
-    return () => clearInterval(interval);
+    intervalRef.current = setInterval(checkStatus, 5000);
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, []);
+
+  useEffect(() => {
+    if (status?.status === 'ready' && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, [status]);
 
   // Auto-scroll messages
   useEffect(() => {
@@ -257,7 +301,7 @@ function App() {
   const handleSendMessage = async (textToSend: string) => {
     if (!textToSend.trim() || loading) return;
 
-    const userMsgId = Date.now().toString();
+    const userMsgId = crypto.randomUUID();
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
     const userMessage: Message = {
@@ -271,16 +315,20 @@ function App() {
     setInputText('');
     setLoading(true);
 
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
     try {
       const historyPayload: [string, string][] = [];
-      for (let i = 0; i < messages.length; i += 2) {
-        if (messages[i] && messages[i + 1]) {
-          historyPayload.push([messages[i].text, messages[i + 1].text]);
-        }
+      const userMsgs = messages.filter(m => m.sender === 'user');
+      const botMsgs = messages.filter(m => m.sender === 'bot');
+      const pairCount = Math.min(userMsgs.length, botMsgs.length);
+      for (let i = 0; i < pairCount; i++) {
+        historyPayload.push([userMsgs[i].text, botMsgs[i].text]);
       }
 
       const res = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
+        signal: controller.signal,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -298,7 +346,7 @@ function App() {
       const data = await res.json();
       
       const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         sender: 'bot',
         text: data.answer,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -311,9 +359,10 @@ function App() {
         setSelectedSource(0);
       }
     } catch (error: any) {
+      if ((error as Error).name === 'AbortError') return;
       console.error(error);
       const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         sender: 'bot',
         text: `⚠️ Error: ${error.message || "Failed to communicate with local model server. Make sure backend.py is running."}`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -429,9 +478,11 @@ function App() {
             <button 
               className="header-btn" 
               onClick={() => {
+                abortControllerRef.current?.abort();
                 setMessages([]);
                 setSources([]);
                 setSelectedSource(null);
+                setLoading(false);
                 setToast({ message: "Console cleared successfully", type: "info" });
               }}
             >
@@ -484,21 +535,8 @@ function App() {
               </div>
 
               {!isServerReady && (
-                <div style={{
-                  background: 'var(--accent-gold-dim)',
-                  border: '1px solid rgba(226, 179, 60, 0.2)',
-                  borderRadius: '12px',
-                  padding: '0.85rem 1.25rem',
-                  fontSize: '0.8rem',
-                  color: 'var(--accent-gold)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.65rem',
-                  marginTop: '1.5rem',
-                  width: '100%',
-                  justifyContent: 'center'
-                }}>
-                  <RefreshCw size={14} className="animate-spin" style={{ animation: 'spin 2s linear infinite' }} />
+                <div className="init-banner">
+                  <RefreshCw size={14} className="spin" />
                   <span>Loading local weights & FAISS databases. This may take a moment...</span>
                 </div>
               )}
@@ -532,11 +570,11 @@ function App() {
             <div className="message-bubble bot">
               <div className="message-avatar">⚖️</div>
               <div className="message-content-wrapper">
-                <div className="message-content" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>
+                <div className="message-content">
                   <div className="skeleton-container">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                    <div className="skeleton-header">
                       <Sparkles size={12} color="var(--accent-cyan)" />
-                      <span style={{ fontSize: '0.78rem', color: 'var(--accent-cyan)', fontWeight: 'bold' }}>Retrieving & Synthesizing response...</span>
+                      <span>Retrieving & Synthesizing response...</span>
                     </div>
                     <div className="skeleton-line w-90"></div>
                     <div className="skeleton-line w-80"></div>
@@ -570,7 +608,7 @@ function App() {
               <Send size={18} />
             </button>
           </div>
-          <div style={{ textAlign: 'center', marginTop: '0.75rem', fontSize: '0.7rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+          <div className="input-hint">
             <Info size={11} /> Grounded results are generated only from retrieved document clauses.
           </div>
         </div>
